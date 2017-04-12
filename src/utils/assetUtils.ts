@@ -1,7 +1,7 @@
 import * as Assets from '../assets';
 
 export class Loader {
-    private static game: Phaser.Game = null;
+    private static game: Phaser.Game;
     private static soundKeys: string[] = [];
     private static soundExtensionsPreference: string[] = SOUND_EXTENSIONS_PREFERENCE;
 
@@ -28,6 +28,10 @@ export class Loader {
                     }
                 }
 
+                if (!imageOption) {
+                    throw new Error('No imageOption found');
+                }
+
                 this.game.load.spritesheet(Assets.Spritesheets[spritesheet].getName(), Assets.Spritesheets[spritesheet][imageOption](), Assets.Spritesheets[spritesheet].getFrameWidth(), Assets.Spritesheets[spritesheet].getFrameHeight(), Assets.Spritesheets[spritesheet].getFrameMax(), Assets.Spritesheets[spritesheet].getMargin(), Assets.Spritesheets[spritesheet].getSpacing());
             }
         }
@@ -45,6 +49,10 @@ export class Loader {
                     } else if (option !== 'getName' && option !== 'Frames') {
                         imageOption = option;
                     }
+                }
+
+                if (!imageOption) {
+                    throw new Error('No imageOption found');
                 }
 
                 if (dataOption === 'getXML') {
@@ -126,6 +134,13 @@ export class Loader {
                     } else if (option !== 'getName') {
                         imageOption = option;
                     }
+                }
+
+                if (!imageOption) {
+                    throw new Error('No imageOption found');
+                }
+                if (!dataOption) {
+                    throw new Error('No dataOption found');
                 }
 
                 this.game.load.bitmapFont(Assets.BitmapFonts[font].getName(), Assets.BitmapFonts[font][imageOption](), Assets.BitmapFonts[font][dataOption]());
