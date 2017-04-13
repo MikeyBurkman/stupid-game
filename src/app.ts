@@ -4,37 +4,32 @@ import 'phaser';
 
 import * as WebFontLoader from 'webfontloader';
 
-import Boot from './states/boot';
-import Preloader from './states/preloader';
-import Title from './states/title';
+import bootState from './states/boot';
+import preloaderState from './states/preloader';
+import titleState from './states/title';
 import * as Utils from './utils/utils';
 import * as Assets from './assets';
 
-class App extends Phaser.Game {
-    constructor(config: Phaser.IGameConfig) {
-        super (config);
-
-        this.state.add('boot', Boot);
-        this.state.add('preloader', Preloader);
-        this.state.add('title', Title(this));
-
-        this.state.start('boot');
-    }
-}
+window['loaded'] = window['loaded'] || false;
 
 function startApp(): void {
+    if (window['loaded']) {
+        return;
+    }
+    window['loaded'] = true;
+    
     let gameWidth: number = DEFAULT_GAME_WIDTH;
     let gameHeight: number = DEFAULT_GAME_HEIGHT;
 
     if (SCALE_MODE === 'USER_SCALE') {
-        let screenMetrics: Utils.ScreenMetrics = Utils.ScreenUtils.calculateScreenMetrics(gameWidth, gameHeight);
+        const screenMetrics: Utils.ScreenMetrics = Utils.ScreenUtils.calculateScreenMetrics(gameWidth, gameHeight);
 
         gameWidth = screenMetrics.gameWidth;
         gameHeight = screenMetrics.gameHeight;
     }
 
     // There are a few more options you can set if needed, just take a look at Phaser.IGameCongig
-    let gameConfig: Phaser.IGameConfig = {
+    const gameConfig: Phaser.IGameConfig = {
         width: gameWidth,
         height: gameHeight,
         renderer: Phaser.AUTO,
@@ -42,10 +37,17 @@ function startApp(): void {
         resolution: 1
     };
 
-    let app = new App(gameConfig);
+    const game = new Phaser.Game(gameConfig);
+
+    game.state.add('boot', bootState(game));
+    game.state.add('preloader', preloaderState(game));
+    game.state.add('title', titleState(game));
+
+    game.state.start('boot');
 }
 
 window.onload = () => {
+
     let webFontLoaderOptions: any = null;
     let webFontsToLoad: string[] = GOOGLE_WEB_FONTS;
 

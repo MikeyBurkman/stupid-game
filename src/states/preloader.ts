@@ -3,7 +3,7 @@ import * as AssetUtils from '../utils/assetUtils';
 import IState from '../IState';
 import * as Phaser from 'phaser-ce';
 
-export default function create(game: Phaser.Game): IState {
+export default function init(game: Phaser.Game): IState {
 
     return {
         preload: preload
@@ -33,9 +33,11 @@ export default function create(game: Phaser.Game): IState {
         game.load.setPreloadSprite(preloadBarSprite);
 
         AssetUtils.Loader.loadAllAssets(game, () => {
+            console.log('All assets loaded');
             AssetUtils.Loader.waitForSoundDecoding(() => {
-                this.game.camera.onFadeComplete.addOnce(() => this.game.state.start('title'));
-                this.game.camera.fade(0x000000, 1000);
+                console.log('Sound decoding finished');
+                game.camera.onFadeComplete.addOnce(() => game.state.start('title'));
+                game.camera.fade(0x000000, 1000);
             });
         });
     }

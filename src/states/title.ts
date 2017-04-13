@@ -2,7 +2,7 @@ import * as Assets from '../assets';
 import IState from '../IState';
 import * as Phaser from 'phaser-ce';
 
-export default function create(game: Phaser.Game): IState {
+export default function init(game: Phaser.Game): IState {
 
     return {
         create: create
