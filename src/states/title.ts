@@ -1,9 +1,10 @@
 import * as Assets from '../assets';
 import IState from '../IState';
+import * as Phaser from 'phaser-ce';
 
-export default function create(game: Phaser.Game) {
+export default function create(game: Phaser.Game): IState {
 
-    const n: IState = {
+    return {
         create: create
     };
     

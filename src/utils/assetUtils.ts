@@ -6,61 +6,55 @@ export class Loader {
     private static soundExtensionsPreference: string[] = SOUND_EXTENSIONS_PREFERENCE;
 
     private static loadImages() {
-        for (let image in Assets.Images) {
-            if (!this.game.cache.checkImageKey(Assets.Images[image].getName())) {
-                for (let option in Assets.Images[image]) {
-                    if (option !== 'getName') {
-                        this.game.load.image(Assets.Images[image].getName(), Assets.Images[image][option]());
-                    }
-                }
+        for (let imageName in Assets.Images) {
+            const image = Assets.Images[imageName];
+            if (!this.game.cache.checkImageKey(image.getName())) {
+                this.game.load.image(image.getName(), image.getPNG());
             }
         }
     }
 
     private static loadSpritesheets() {
         for (let spritesheet in Assets.Spritesheets) {
-            if (!this.game.cache.checkImageKey(Assets.Spritesheets[spritesheet].getName())) {
-                let imageOption = null;
-
-                for (let option in Assets.Spritesheets[spritesheet]) {
-                    if (option !== 'getName' && option !== 'getFrameWidth' && option !== 'getFrameHeight' && option !== 'getFrameMax' && option !== 'getMargin' && option !== 'getSpacing') {
-                        imageOption = option;
-                    }
-                }
-
-                if (!imageOption) {
-                    throw new Error('No imageOption found');
-                }
-
-                this.game.load.spritesheet(Assets.Spritesheets[spritesheet].getName(), Assets.Spritesheets[spritesheet][imageOption](), Assets.Spritesheets[spritesheet].getFrameWidth(), Assets.Spritesheets[spritesheet].getFrameHeight(), Assets.Spritesheets[spritesheet].getFrameMax(), Assets.Spritesheets[spritesheet].getMargin(), Assets.Spritesheets[spritesheet].getSpacing());
+            const sheet = Assets.Spritesheets[spritesheet];
+            if (!this.game.cache.checkImageKey(sheet.getName())) {
+                this.game.load.spritesheet(
+                    sheet.getName(), 
+                    sheet.getPNG(), 
+                    sheet.getFrameWidth(), 
+                    sheet.getFrameHeight(), 
+                    sheet.getFrameMax(), 
+                    sheet.getMargin(), 
+                    sheet.getSpacing());
             }
         }
     }
 
     private static loadAtlases() {
-        for (let atlas in Assets.Atlases) {
-            if (!this.game.cache.checkImageKey(Assets.Atlases[atlas].getName())) {
-                let imageOption = null;
-                let dataOption = null;
+        for (let atlasName in Assets.Atlases) {
+            const atlas = Assets.Atlases[atlasName];
 
-                for (let option in Assets.Atlases[atlas]) {
-                    if (option === 'getXML' || option === 'getJSONArray' || option === 'getJSONHash') {
-                        dataOption = option;
-                    } else if (option !== 'getName' && option !== 'Frames') {
-                        imageOption = option;
-                    }
-                }
+            if (!this.game.cache.checkImageKey(atlas.getName())) {
 
-                if (!imageOption) {
-                    throw new Error('No imageOption found');
-                }
+                const dataOption = atlas.getXML || atlas.getJSONArray || atlas.getJSONHash;
 
-                if (dataOption === 'getXML') {
-                    this.game.load.atlasXML(Assets.Atlases[atlas].getName(), Assets.Atlases[atlas][imageOption](), Assets.Atlases[atlas].getXML());
-                } else if (dataOption === 'getJSONArray') {
-                    this.game.load.atlasJSONArray(Assets.Atlases[atlas].getName(), Assets.Atlases[atlas][imageOption](), Assets.Atlases[atlas].getJSONArray());
-                } else if (dataOption === 'getJSONHash') {
-                    this.game.load.atlasJSONHash(Assets.Atlases[atlas].getName(), Assets.Atlases[atlas][imageOption](), Assets.Atlases[atlas].getJSONHash());
+                if (atlas.getXML) {
+                    this.game.load.atlasXML(
+                        atlas.getName(), 
+                        atlas.getPNG(), 
+                        atlas.getXML());
+
+                } else if (atlas.getJSONArray) {
+                    this.game.load.atlasJSONArray(
+                        atlas.getName(), 
+                        atlas.getPNG(), 
+                        atlas.getJSONArray());
+
+                } else if (atlas.getJSONHash) {
+                    this.game.load.atlasJSONHash(
+                        atlas.getName(), 
+                        atlas.getPNG(), 
+                        atlas.getJSONHash());
                 }
             }
         }
@@ -81,69 +75,75 @@ export class Loader {
     }
 
     private static loadAudio() {
-        for (let audio in Assets.Audio) {
-            let soundName = Assets.Audio[audio].getName();
+
+        const options = [
+            'getAC3',
+            'getM4A',
+            'getMP3',
+            'getOGG'
+        ];
+
+        for (let audioName in Assets.Audio) {
+            const audio = Assets.Audio[audioName];
+            const soundName = audio.getName();
             this.soundKeys.push(soundName);
 
             if (!this.game.cache.checkSoundKey(soundName)) {
-                let audioTypeArray = [];
+                const audioTypeArray: string[] = [];
 
-                for (let option in Assets.Audio[audio]) {
-                    if (option !== 'getName') {
-                        audioTypeArray.push(Assets.Audio[audio][option]());
+                options.forEach((option) => {
+                    if (audio[option]) {
+                        audioTypeArray.push(audio[option]());
                     }
-                }
+                });
 
-                audioTypeArray = this.orderAudioSourceArrayBasedOnSoundExtensionPreference(audioTypeArray);
+                const sortedArray = this.orderAudioSourceArrayBasedOnSoundExtensionPreference(audioTypeArray);
 
-                this.game.load.audio(soundName, audioTypeArray, true);
+                this.game.load.audio(soundName, sortedArray, true);
             }
         }
     }
 
     private static loadAudiosprites() {
-        for (let audio in Assets.Audiosprites) {
-            let soundName = Assets.Audiosprites[audio].getName();
+        const options = [
+            'getAC3',
+            'getM4A',
+            'getMP3',
+            'getOGG'
+        ];
+
+        for (let audioName in Assets.Audiosprites) {
+            const audio = Assets.Audiosprites[audioName];
+            let soundName = audio.getName();
             this.soundKeys.push(soundName);
 
             if (!this.game.cache.checkSoundKey(soundName)) {
-                let audioTypeArray = [];
+                const audioTypeArray: string[] = [];
 
-                for (let option in Assets.Audiosprites[audio]) {
-                    if (option !== 'getName' && option !== 'getJSON' && option !== 'Sprites') {
-                        audioTypeArray.push(Assets.Audiosprites[audio][option]());
+                options.forEach((option) => {
+                    if (audio[option]) {
+                        audioTypeArray.push(audio[option]());
                     }
-                }
+                });
 
-                audioTypeArray = this.orderAudioSourceArrayBasedOnSoundExtensionPreference(audioTypeArray);
+                const sortedArray = this.orderAudioSourceArrayBasedOnSoundExtensionPreference(audioTypeArray);
 
-                this.game.load.audiosprite(soundName, audioTypeArray, Assets.Audiosprites[audio].getJSON(), null, true);
+                this.game.load.audiosprite(soundName, sortedArray, audio.getJSON(), null, true);
             }
         }
     }
 
     private static loadBitmapFonts() {
-        for (let font in Assets.BitmapFonts) {
-            if (!this.game.cache.checkBitmapFontKey(Assets.BitmapFonts[font].getName())) {
-                let imageOption = null;
-                let dataOption = null;
+        for (let fontName in Assets.BitmapFonts) {
+            const font = Assets.BitmapFonts[fontName];
+            if (!this.game.cache.checkBitmapFontKey(font.getName())) {
+                
+                const dataOption = font.getXML || font.getFNT;
 
-                for (let option in Assets.BitmapFonts[font]) {
-                    if (option === 'getXML' || option === 'getFNT') {
-                        dataOption = option;
-                    } else if (option !== 'getName') {
-                        imageOption = option;
-                    }
-                }
-
-                if (!imageOption) {
-                    throw new Error('No imageOption found');
-                }
-                if (!dataOption) {
-                    throw new Error('No dataOption found');
-                }
-
-                this.game.load.bitmapFont(Assets.BitmapFonts[font].getName(), Assets.BitmapFonts[font][imageOption](), Assets.BitmapFonts[font][dataOption]());
+                this.game.load.bitmapFont(
+                    font.getName(), 
+                    font.getPNG(), 
+                    dataOption());
             }
         }
     }

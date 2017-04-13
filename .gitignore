@@ -3,10 +3,12 @@
 
 # Node.js
 node_modules
+*.log
 
 # Game
 dist
 builds
+src/assets.ts
 
 # OSX
 .DS_Store
@@ -14,3 +16,4 @@ builds
 # Visual Studio
 .vs
 .vscode
+
