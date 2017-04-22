@@ -5,8 +5,11 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
+    "noImplicitThis": true,
     "noLib": false,
     "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "strictNullChecks": true,
     "skipLibCheck": true
   },

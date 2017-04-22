@@ -35,9 +35,6 @@ export class Loader {
             const atlas = Assets.Atlases[atlasName];
 
             if (!this.game.cache.checkImageKey(atlas.getName())) {
-
-                const dataOption = atlas.getXML || atlas.getJSONArray || atlas.getJSONHash;
-
                 if (atlas.getXML) {
                     this.game.load.atlasXML(
                         atlas.getName(), 
@@ -150,6 +147,7 @@ export class Loader {
 
     private static loadJSON() {
         for (let json in Assets.JSON) {
+            console.log('###', json, ' - ', Assets.JSON[json])
             if (!this.game.cache.checkJSONKey(Assets.JSON[json].getName())) {
                 this.game.load.json(Assets.JSON[json].getName(), Assets.JSON[json].getJSON(), true);
             }

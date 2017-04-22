@@ -36,6 +36,15 @@ function findExtension(haystack, arr) {
     });
 }
 
+function emitDefaultEmptyClass() {
+    shell.ShellString('\n    export class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}')
+    .toEnd(assetsClassFile);
+}
+
+function emitEmpty(type) {
+    shell.ShellString(`export const ${type} = {};\n\n`).toEnd(assetsClassFile);
+}
+
 var gameAssets = {};
 
 var loaderTypes = {
@@ -136,10 +145,10 @@ shell.rm('-f', assetsClassFile);
 
 shell.ShellString('/* AUTO GENERATED FILE. DO NOT MODIFY. YOU WILL LOSE YOUR CHANGES ON BUILD. */\n\n').to(assetsClassFile);
 
-shell.ShellString('export namespace Images {').toEnd(assetsClassFile);
 if (!Object.keys(loaderTypes.image).length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('Images');
 } else {
+    shell.ShellString('export namespace Images {').toEnd(assetsClassFile);
     for (var i in loaderTypes.image) {
         shell.ShellString('\n    export class ' + toPascalCase(i) + ' {').toEnd(assetsClassFile);
         shell.ShellString('\n        static getName(): string { return \'' + i.split('/').pop() + '\'; };\n').toEnd(assetsClassFile);
@@ -150,13 +159,13 @@ if (!Object.keys(loaderTypes.image).length) {
 
         shell.ShellString('\n    }').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 
-shell.ShellString('export namespace Spritesheets {').toEnd(assetsClassFile);
 if (!Object.keys(loaderTypes.spritesheet).length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('Spritesheets');
 } else {
+    shell.ShellString('export namespace Spritesheets {').toEnd(assetsClassFile);
     for (var i in loaderTypes.spritesheet) {
         shell.ShellString('\n    export class ' + toPascalCase(i) + ' {').toEnd(assetsClassFile);
         shell.ShellString('\n        static getName(): string { return \'' + i.split('/').pop() + '\'; };\n').toEnd(assetsClassFile);
@@ -176,13 +185,13 @@ if (!Object.keys(loaderTypes.spritesheet).length) {
 
         shell.ShellString('\n    }').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 
-shell.ShellString('export namespace Atlases {').toEnd(assetsClassFile);
 if (!Object.keys(loaderTypes.atlas).length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('Atlases');
 } else {
+    shell.ShellString('export namespace Atlases {').toEnd(assetsClassFile);
     for (var i in loaderTypes.atlas) {
         var dataExtensions = [];
         var dataTypes = [];
@@ -260,13 +269,13 @@ if (!Object.keys(loaderTypes.atlas).length) {
         shell.ShellString('\n\n        static Frames = ' + toPascalCase(i) + 'Frames;').toEnd(assetsClassFile);
         shell.ShellString('\n    }').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 
-shell.ShellString('export namespace Audio {').toEnd(assetsClassFile);
 if (!Object.keys(loaderTypes.audio).length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('Audio');
 } else {
+    shell.ShellString('export namespace Audio {').toEnd(assetsClassFile);
     for (var i in loaderTypes.audio) {
         shell.ShellString('\n    export class ' + toPascalCase(i) + ' {').toEnd(assetsClassFile);
         shell.ShellString('\n        static getName(): string { return \'' + i.split('/').pop() + '\'; };\n').toEnd(assetsClassFile);
@@ -277,13 +286,13 @@ if (!Object.keys(loaderTypes.audio).length) {
 
         shell.ShellString('\n    }').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 
-shell.ShellString('export namespace Audiosprites {').toEnd(assetsClassFile);
 if (!Object.keys(loaderTypes.audiosprite).length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('AudioSprites');
 } else {
+    shell.ShellString('export namespace Audiosprites {').toEnd(assetsClassFile);
     for (var i in loaderTypes.audiosprite) {
         for (var t in loaderTypes.audiosprite[i]) {
             var dataFile = ('assets/' + i + '.' + loaderTypes.audiosprite[i][t]);
@@ -318,25 +327,25 @@ if (!Object.keys(loaderTypes.audiosprite).length) {
         shell.ShellString('\n\n        static Sprites = ' + toPascalCase(i) + 'Sprites;').toEnd(assetsClassFile);
         shell.ShellString('\n    }').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 
-shell.ShellString('export namespace GoogleWebFonts {').toEnd(assetsClassFile);
 var webFontsToUse = JSON.parse(webpackConfig.plugins[webpackConfig.plugins.findIndex(function(element) { return (element instanceof webpack.DefinePlugin); })].definitions.GOOGLE_WEB_FONTS);
 if (!webFontsToUse.length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('GoogleWebFonts');
 } else {
+    shell.ShellString('export namespace GoogleWebFonts {').toEnd(assetsClassFile);
     for (var i in webFontsToUse) {
         shell.ShellString('\n    export const ' + toPascalCase(webFontsToUse[i]) + ': string = \'' + webFontsToUse[i] + '\';').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 
 
-shell.ShellString('export namespace CustomWebFonts {').toEnd(assetsClassFile);
 if (!Object.keys(loaderTypes.font).length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('CustomWebFonts');
 } else {
+    shell.ShellString('export namespace CustomWebFonts {').toEnd(assetsClassFile);
     for (var i in loaderTypes.font) {
         shell.ShellString('\n    export class ' + toPascalCase(i) + ' {').toEnd(assetsClassFile);
         shell.ShellString('\n        static getName(): string { return \'' + i.split('/').pop() + '\'; };\n').toEnd(assetsClassFile);
@@ -351,13 +360,13 @@ if (!Object.keys(loaderTypes.font).length) {
 
         shell.ShellString('\n    }').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 
-shell.ShellString('export namespace BitmapFonts {').toEnd(assetsClassFile);
 if (!Object.keys(loaderTypes.bitmap_font).length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('BitmapFonts');
 } else {
+    shell.ShellString('export namespace BitmapFonts {').toEnd(assetsClassFile);
     for (var i in loaderTypes.bitmap_font) {
         shell.ShellString('\n    export class ' + toPascalCase(i) + ' {').toEnd(assetsClassFile);
         shell.ShellString('\n        static getName(): string { return \'' + i.split('/').pop() + '\'; };\n').toEnd(assetsClassFile);
@@ -368,13 +377,13 @@ if (!Object.keys(loaderTypes.bitmap_font).length) {
 
         shell.ShellString('\n    }').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 
-shell.ShellString('export namespace JSON {').toEnd(assetsClassFile);
 if (!Object.keys(loaderTypes.json).length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('JSON');
 } else {
+    shell.ShellString('export namespace JSON {').toEnd(assetsClassFile);
     for (var i in loaderTypes.json) {
         shell.ShellString('\n    export class ' + toPascalCase(i) + ' {').toEnd(assetsClassFile);
         shell.ShellString('\n        static getName(): string { return \'' + i.split('/').pop() + '\'; };\n').toEnd(assetsClassFile);
@@ -385,13 +394,15 @@ if (!Object.keys(loaderTypes.json).length) {
 
         shell.ShellString('\n    }').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 
-shell.ShellString('export namespace XML {').toEnd(assetsClassFile);
+
+
 if (!Object.keys(loaderTypes.xml).length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('XML');
 } else {
+    shell.ShellString('export namespace XML {').toEnd(assetsClassFile);
     for (var i in loaderTypes.xml) {
         shell.ShellString('\n    export class ' + toPascalCase(i) + ' {').toEnd(assetsClassFile);
         shell.ShellString('\n        static getName(): string { return \'' + i.split('/').pop() + '\'; };\n').toEnd(assetsClassFile);
@@ -402,13 +413,14 @@ if (!Object.keys(loaderTypes.xml).length) {
 
         shell.ShellString('\n    }').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 
-shell.ShellString('export namespace Text {').toEnd(assetsClassFile);
+
 if (!Object.keys(loaderTypes.text).length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('Text');
 } else {
+    shell.ShellString('export namespace Text {').toEnd(assetsClassFile);
     for (var i in loaderTypes.text) {
         shell.ShellString('\n    export class ' + toPascalCase(i) + ' {').toEnd(assetsClassFile);
         shell.ShellString('\n        static getName(): string { return \'' + i.split('/').pop() + '\'; };\n').toEnd(assetsClassFile);
@@ -419,13 +431,13 @@ if (!Object.keys(loaderTypes.text).length) {
 
         shell.ShellString('\n    }').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n\n').toEnd(assetsClassFile);
 
-shell.ShellString('export namespace Scripts {').toEnd(assetsClassFile);
 if (!Object.keys(loaderTypes.script).length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('Scripts');
 } else {
+    shell.ShellString('export namespace Scripts {').toEnd(assetsClassFile);
     for (var i in loaderTypes.script) {
         shell.ShellString('\n    export class ' + toPascalCase(i) + ' {').toEnd(assetsClassFile);
         shell.ShellString('\n        static getName(): string { return \'' + i.split('/').pop() + '\'; };\n').toEnd(assetsClassFile);
@@ -436,13 +448,13 @@ if (!Object.keys(loaderTypes.script).length) {
 
         shell.ShellString('\n    }').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n').toEnd(assetsClassFile);
 
-shell.ShellString('export namespace Shaders {').toEnd(assetsClassFile);
 if (!Object.keys(loaderTypes.shader).length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('Shaders');
 } else {
+    shell.ShellString('export namespace Shaders {').toEnd(assetsClassFile);
     for (var i in loaderTypes.shader) {
         shell.ShellString('\n    export class ' + toPascalCase(i) + ' {').toEnd(assetsClassFile);
         shell.ShellString('\n        static getName(): string { return \'' + i.split('/').pop() + '\'; };\n').toEnd(assetsClassFile);
@@ -453,13 +465,13 @@ if (!Object.keys(loaderTypes.shader).length) {
 
         shell.ShellString('\n    }').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n').toEnd(assetsClassFile);
 
-shell.ShellString('export namespace Misc {').toEnd(assetsClassFile);
 if (!Object.keys(loaderTypes.misc).length) {
-    shell.ShellString('\n    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}').toEnd(assetsClassFile);
+    emitEmpty('Misc');
 } else {
+    shell.ShellString('export namespace Misc {').toEnd(assetsClassFile);
     for (var i in loaderTypes.misc) {
         shell.ShellString('\n    export class ' + toPascalCase(i) + ' {').toEnd(assetsClassFile);
         shell.ShellString('\n        static getName(): string { return \'' + i.split('/').pop() + '\'; };\n').toEnd(assetsClassFile);
@@ -470,5 +482,5 @@ if (!Object.keys(loaderTypes.misc).length) {
 
         shell.ShellString('\n    }').toEnd(assetsClassFile);
     }
+    shell.ShellString('\n}\n').toEnd(assetsClassFile);
 }
-shell.ShellString('\n}\n').toEnd(assetsClassFile);

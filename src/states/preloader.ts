@@ -10,7 +10,7 @@ export default function init(game: Phaser.Game): IState {
     };
 
     function preload() {
-        const preloadBarSprite = this.game.add.sprite(
+        const preloadBarSprite = game.add.sprite(
             game.world.centerX, 
             game.world.centerY, 
             Assets.Atlases.AtlasesPreloadSpritesArray.getName(), 
@@ -21,7 +21,7 @@ export default function init(game: Phaser.Game): IState {
         preloadBarSprite.anchor.setTo(0, 0.5);
         preloadBarSprite.x -= preloadBarSprite.width * 0.5;
 
-        const preloadFrameSprite = this.game.add.sprite(
+        const preloadFrameSprite = game.add.sprite(
             game.world.centerX, 
             game.world.centerY, 
             Assets.Atlases.AtlasesPreloadSpritesArray.getName(), 
